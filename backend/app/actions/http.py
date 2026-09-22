@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from app.actions.base import Action, ActionContext, ActionOutcome
 from app.core.net import UnsafeTargetError, validate_target
 from app.services.http_client import build_client
-from app.services.templating import render
+from app.services.templating import PLACEHOLDER, render
 
 Method = Literal["GET", "POST", "PUT", "PATCH", "DELETE"]
 BODYLESS = {"GET", "DELETE"}
@@ -51,8 +51,10 @@ class HttpConfig(BaseModel):
         if self.method in BODYLESS and self.body_template:
             raise ValueError(f"{self.method} requests cannot carry a body")
         if self.json_body and self.body_template:
-            # Fail at save time rather than on every execution.
-            probe = render(self.body_template, {}, json_string=True).text
+            # Check the shape at save time rather than on every execution. Every
+            # placeholder becomes 0, which is valid both bare ({{amount}}) and
+            # quoted ("{{id}}"), so only real JSON mistakes are rejected.
+            probe = PLACEHOLDER.sub("0", self.body_template)
             try:
                 json.loads(probe)
             except json.JSONDecodeError as exc:

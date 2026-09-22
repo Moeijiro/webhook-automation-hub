@@ -156,3 +156,21 @@ def test_the_action_catalogue_comes_from_the_registry(auth_client: TestClient) -
     telegram = next(e for e in catalogue if e["type"] == "telegram_message")
     assert telegram["secret_fields"] == ["bot_token"]
     assert "properties" in telegram["schema"]
+
+
+def test_a_numeric_placeholder_is_accepted_in_a_json_body(auth_client: TestClient) -> None:
+    """`{"amount": {{amount}}}` is valid: placeholders are probed as 0, not as
+    an empty string."""
+    response = auth_client.post(
+        "/api/workflows",
+        json={
+            "name": "Numbers",
+            "action_type": "http_request",
+            "config": {
+                "method": "POST",
+                "url": "https://api.example.com/x",
+                "body_template": '{"order": "{{order_id}}", "amount": {{amount}}}',
+            },
+        },
+    )
+    assert response.status_code == 201
