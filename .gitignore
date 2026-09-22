@@ -11,8 +11,10 @@ venv/
 .env.local
 *.pem
 
-# Database
+# Database (WAL mode leaves -wal/-shm sidecars next to the file)
 *.db
+*.db-wal
+*.db-shm
 *.sqlite3
 
 # Node
