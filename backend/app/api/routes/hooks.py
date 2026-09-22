@@ -54,10 +54,8 @@ async def trigger(
 
     raw = await request.body()
     if len(raw) > settings.max_payload_bytes:
-        raise HTTPException(
-            status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            f"Payload exceeds {settings.max_payload_bytes} bytes.",
-        )
+        # Starlette renamed the 413 constant; the number is the stable spelling.
+        raise HTTPException(413, f"Payload exceeds {settings.max_payload_bytes} bytes.")
 
     workflow = db.execute(
         select(Workflow).where(Workflow.token == token)
