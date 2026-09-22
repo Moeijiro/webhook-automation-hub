@@ -7,7 +7,7 @@ const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/workflows", label: "Workflows", icon: Workflow },
   { to: "/logs", label: "Logs", icon: ScrollText },
-  { to: "/api-keys", label: "API keys", icon: KeyRound },
+  { to: "/keys", label: "API keys", icon: KeyRound },
 ];
 
 export function AppShell() {

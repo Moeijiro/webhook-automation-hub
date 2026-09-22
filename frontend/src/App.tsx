@@ -28,7 +28,7 @@ export default function App() {
           <Route path="/workflows" element={<Workflows />} />
           <Route path="/workflows/:workflowId" element={<WorkflowDetail />} />
           <Route path="/logs" element={<Logs />} />
-          <Route path="/api-keys" element={<ApiKeys />} />
+          <Route path="/keys" element={<ApiKeys />} />
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<NotFound />} />
