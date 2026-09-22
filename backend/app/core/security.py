@@ -25,11 +25,14 @@ API_KEY_HEADER = "X-API-Key"
 API_KEY_PREFIX = "whk_"
 JWT_ALGORITHM = "HS256"
 
-# scrypt parameters: ~64 MiB and about 100 ms per hash on a modern laptop.
-SCRYPT_N = 2**16
+# scrypt parameters: 128 * r * N = 16 MiB and roughly 50 ms per hash. maxmem
+# has to be passed explicitly -- OpenSSL's default ceiling is 32 MiB, which
+# silently rules out stronger parameters.
+SCRYPT_N = 2**14
 SCRYPT_R = 8
 SCRYPT_P = 1
 SCRYPT_LEN = 32
+SCRYPT_MAXMEM = 256 * 1024 * 1024
 
 
 def _derive_key(info: str, length: int = 32) -> bytes:
@@ -52,7 +55,13 @@ def hash_password(password: str) -> str:
     """``scrypt$n$r$p$salt$digest`` -- parameters travel with the hash."""
     salt = secrets.token_bytes(16)
     digest = hashlib.scrypt(
-        password.encode(), salt=salt, n=SCRYPT_N, r=SCRYPT_R, p=SCRYPT_P, dklen=SCRYPT_LEN
+        password.encode(),
+        salt=salt,
+        n=SCRYPT_N,
+        r=SCRYPT_R,
+        p=SCRYPT_P,
+        dklen=SCRYPT_LEN,
+        maxmem=SCRYPT_MAXMEM,
     )
     return "scrypt${}${}${}${}${}".format(
         SCRYPT_N,
@@ -75,6 +84,7 @@ def verify_password(password: str, stored: str) -> bool:
             r=int(r),
             p=int(p),
             dklen=len(base64.b64decode(digest_b64)),
+            maxmem=SCRYPT_MAXMEM,
         )
     except (ValueError, TypeError):
         return False
