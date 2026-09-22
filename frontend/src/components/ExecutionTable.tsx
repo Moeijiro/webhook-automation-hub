@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { StatusBadge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/Feedback";
@@ -48,9 +48,8 @@ export function ExecutionTable({
               (execution.action_result?.detail as string | undefined) ??
               "—";
             return (
-              <>
+              <Fragment key={execution.id}>
                 <tr
-                  key={execution.id}
                   onClick={() => setExpanded(open ? null : execution.id)}
                   className="cursor-pointer border-t border-[var(--color-border)] transition-colors hover:bg-[var(--color-surface-raised)]/40"
                 >
@@ -86,7 +85,7 @@ export function ExecutionTable({
                   </td>
                 </tr>
                 {open ? (
-                  <tr key={`${execution.id}-detail`} className="bg-[var(--color-canvas)]/60">
+                  <tr className="bg-[var(--color-canvas)]/60">
                     <td colSpan={showWorkflow ? 7 : 6} className="px-3 pb-4">
                       <div className="grid gap-3 md:grid-cols-2">
                         <Payload title="Trigger payload" value={execution.trigger_payload} />
@@ -95,7 +94,7 @@ export function ExecutionTable({
                     </td>
                   </tr>
                 ) : null}
-              </>
+              </Fragment>
             );
           })}
         </tbody>
