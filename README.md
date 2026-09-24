@@ -1,5 +1,7 @@
 # Webhook Automation Hub
 
+**Portfolio case study:** [moeijiro.github.io/portfolio/projects/webhook-automation-hub](https://moeijiro.github.io/portfolio/projects/webhook-automation-hub/) · **Live demo:** not hosted — the app runs locally in a few commands (see below).
+
 A small automation tool with one job: take an incoming webhook, transform the payload, and
 do something with it somewhere else — post to Discord, message a Telegram chat, or call
 another HTTP API — then keep a log of every run.
